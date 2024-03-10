@@ -26,6 +26,17 @@
     opacity: 0.5;
     pointer-events: none;
   }
+  .have-account{
+    @apply text-grayDark;
+    text-align: center
+  }
+  .navlink {
+    @apply text-primary;
+    text-decoration: underline;
+  }
+  .navlink:hover {
+    opacity: 0.5;
+  }
 }
 
 @layer base {

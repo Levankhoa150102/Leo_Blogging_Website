@@ -1,30 +1,84 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Button } from "../components/button";
-import SpinnerLoading from "../components/loading/Loading";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { toast } from "react-toastify";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth, db } from "../firebase_web/firebase-config";
+import { addDoc, collection } from "firebase/firestore";
+import { NavLink, useNavigate } from "react-router-dom";
+import AuthenticationPage from "./AuthenticationPage";
 
-const Signup = () => {
+//Validation schema
+const schema = yup.object().shape({
+  fullname: yup.string().required("Fullname is required"),
+  email: yup.string().email("Email is invalid").required("Email is required"),
+  password: yup
+    .string()
+    .min(5, "Your password must be at least 5 characters")
+    .required("Password is required"),
+});
+const SignUp = () => {
+  const colRef = collection(db, "users");
+  const navigate = useNavigate();
   const {
-    control,
+    register,
     handleSubmit,
     formState: { errors, isValid, isSubmitting },
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(schema),
   });
+
+  //Toggle password
   const [togglePassword, setTogglePassword] = useState(false);
   const handleTogglePassword = () => {
     setTogglePassword(!togglePassword);
   };
-  const handleSignUp = (e) => {
-    e.preventDefault();
+
+  //Handle sign up
+  const handleSignUp = async (values) => {
+    if (!isValid) return;
+    const user = await createUserWithEmailAndPassword(
+      auth,
+      values.email,
+      values.password
+    );
+    await updateProfile(auth.currentUser, {
+      displayName: values.fullname,
+    });
+    //Add user to firestore
+    await addDoc(colRef, {
+      fullname: values.fullname,
+      email: values.email,
+      password: values.password,
+    });
+
+    toast.success("Sign up successfully", {
+      delay: 100,
+      pauseOnHover: false,
+    });
+    navigate("/");
   };
+
+  //Display error message
+  useEffect(() => {
+    const arrErrors = Object.values(errors);
+    if (arrErrors.length > 0) {
+      toast.error(arrErrors[0]?.message, {
+        delay: 100,
+        pauseOnHover: false,
+      });
+    }
+  }, [errors]);
   return (
-    <div className="page-container">
-      <img srcSet="/logoLeo.png" alt="logo" className="w-20 h-20 m-auto" />
-      <h1 className="text-4xl font-semibold  text-center text-primary">
-        LEO Blogging
-      </h1>
-      <form className="max-w-2xl m-auto mt-5" onSubmit={handleSignUp}>
+    <AuthenticationPage>
+      <form
+        className="max-w-2xl m-auto mt-5"
+        onSubmit={handleSubmit(handleSignUp)}
+        autoComplete="off"
+      >
         <label htmlFor="fullname" className="text-lg font-bold text-grayDark">
           Fullname
         </label>
@@ -33,15 +87,17 @@ const Signup = () => {
           name="fullname"
           placeholder="Please enter your full name"
           className="Auth-input"
+          {...register("fullname")}
         />
         <label htmlFor="fullname" className="text-lg font-bold text-grayDark">
           Email Address
         </label>
         <input
-          type="text"
+          type="email"
           name="email"
           placeholder="Please enter your email"
           className="Auth-input"
+          {...register("email")}
         />
         <label htmlFor="fullname" className="text-lg font-bold text-grayDark">
           Password
@@ -52,6 +108,7 @@ const Signup = () => {
             name="password"
             placeholder="Please enter your password"
             className="Auth-input"
+            {...register("password")}
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -82,12 +139,17 @@ const Signup = () => {
             )}
           </svg>
         </div>
-        {/* <Button type="submit" disabled={"true"} isLoading="true">
+        <Button type="submit" isLoading={isSubmitting} disabled={isSubmitting}>
           SIGN UP
-        </Button> */}
-        <Button type="submit">SIGN UP</Button>
+        </Button>
+        <div className="have-account">
+          You already have an account?{" "}
+          <NavLink className="navlink" to="/sign-in">
+            Login
+          </NavLink>
+        </div>
       </form>
-    </div>
+    </AuthenticationPage>
   );
 };
-export default Signup;
+export default SignUp;
