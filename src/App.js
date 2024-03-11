@@ -4,6 +4,7 @@ import { Authprovider } from "./contexts/auth-context";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import HomePage from "./pages/HomePage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/" element={<HomePage></HomePage>}></Route>
           <Route path="/sign-up" element={<SignUp></SignUp>}></Route>
           <Route path="/sign-in" element={<SignIn></SignIn>}></Route>
+          <Route path="/*" element={<NotFoundPage></NotFoundPage>}></Route>
         </Routes>
       </Authprovider>
     </div>

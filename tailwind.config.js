@@ -9,6 +9,8 @@ module.exports = {
       colors: {
         primary: "rgb(252 193 87)",
         secondary: "#f68200",
+        heading: "#3A1097",
+        newpost: "#f2e9fd",
         grayDark: "#292D32",
         grayLight: "#E7ECF3",
       },
