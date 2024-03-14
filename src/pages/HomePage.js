@@ -9,9 +9,6 @@ import HomeFeature from "../modules/home/HomeFeature";
 import HomeNewest from "../modules/home/HomeNewest";
 
 const HomePage = () => {
-  const handleSignOut = () => {
-    signOut(auth);
-  };
   return (
     <div>
       <Layout>

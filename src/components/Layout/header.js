@@ -2,6 +2,8 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import Button from "../button/Button";
 import { useAuth } from "../../contexts/auth-context";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase_web/firebase-config";
 const menuLinks = [
   {
     url: "/#",
@@ -16,9 +18,11 @@ const menuLinks = [
     title: "Contact",
   },
 ];
+const handleSignOut = () => {
+  signOut(auth);
+};
 const Header = () => {
   const { userInfo } = useAuth();
-  console.log(userInfo);
   return (
     //
     <div className="header-container flex justify-between items-center px-5">
@@ -65,13 +69,12 @@ const Header = () => {
           </Button>
         ) : (
           <NavLink to="/profile" className="navlink">
-            <div className="flex items-center text-primary py-2 px-3 rounded-lg border border-red">
+            <div className="flex items-center text-primary py-2 px-3 rounded-lg border border-red relative">
               <img srcSet="/logoLeo.png" alt="logo" className="w-9 h-9 mr-2" />
               <p>{userInfo?.displayName}</p>
             </div>
           </NavLink>
         )}
-
         {/* className=" text-white font-semibold bg-primary hover:opacity-50 rounded-lg px-6 py-4 ml-3" */}
       </div>
     </div>

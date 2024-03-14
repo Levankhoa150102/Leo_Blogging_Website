@@ -16,7 +16,7 @@ const HomeNewest = () => {
           <PostNewsItem></PostNewsItem>
         </div>
       </div>
-      <div className=" grid grid-cols-4 grid">
+      <div className=" grid grid-cols-4">
         <PostItem></PostItem>
         <PostItem></PostItem>
         <PostItem></PostItem>

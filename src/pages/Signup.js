@@ -9,6 +9,7 @@ import { auth, db } from "../firebase_web/firebase-config";
 import { addDoc, collection } from "firebase/firestore";
 import { NavLink, useNavigate } from "react-router-dom";
 import AuthenticationPage from "./AuthenticationPage";
+import InputToggle from "../components/inputToggle/InputToggle";
 
 //Validation schema
 const schema = yup.object().shape({
@@ -103,7 +104,8 @@ const SignUp = () => {
           Password
         </label>
         <div className="relative">
-          <input
+          <InputToggle register={register}></InputToggle>
+          {/* <input
             type={togglePassword ? "text" : "password"}
             name="password"
             placeholder="Please enter your password"
@@ -137,7 +139,7 @@ const SignUp = () => {
             ) : (
               " "
             )}
-          </svg>
+          </svg> */}
         </div>
         <Button type="submit" isLoading={isSubmitting} disabled={isSubmitting}>
           SIGN UP
